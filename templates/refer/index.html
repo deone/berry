@@ -1,7 +1,7 @@
 
 {% load thumbnail %}
 
-<form action="{% url join %}" method="post">{% csrf_token %}
+<form action="{% url join_pre %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     {% if not referrer %}
     <button>Next</button>
@@ -12,6 +12,9 @@
     {% thumbnail referrer.photo "97x97" crop="center" as rp %}
     <img src="{{ rp.url }}" width="{{ rp.width }}" height="{{ rp.height }}"/>
     {% endthumbnail %}
-    <p>{{ referrer.user.first_name }} {{ referrer.user.last_name }}</p>
-    <button>Confirm</button>&nbsp;<a href="{% url join %}">Cancel</a>
+    <p>
+	You have chosen {{ referrer.user.first_name }} {{ referrer.user.last_name}} as your referrer.
+	If this is correct, please continue.
+    </p>
+    <a href="{% url join_position %}">Confirm</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
 {% endif %}

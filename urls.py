@@ -7,7 +7,9 @@ admin.autodiscover()
 import os
 
 urlpatterns = patterns('',
-    url(r'^join$', 'refer.views.index', name='join'),
+    url(r'^join/pre$', 'refer.views.index', name='join_pre'),
+    url(r'^join/position$', 'refer.views.join_position', name='join_position'),
+    url(r'^join/final$', 'refer.views.join_final', name='join_final'),
     # url(r'^berry/', include('berry.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
