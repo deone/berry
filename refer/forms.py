@@ -24,14 +24,6 @@ class ReferrerNumberForm(forms.Form):
 	return subscriber
 
 
-class PositionForm(forms.Form):
-    position = forms.ChoiceField(choices=POSITION_CHOICES,
-	    widget=forms.Select())
-
-    def save(self, request):
-	request.session['position'] = self.cleaned_data['position']
-
-
 class UserNumberForm(forms.Form):
     phone_number = forms.CharField(label="Your Number", max_length=11)
 
@@ -42,24 +34,23 @@ class UserNumberForm(forms.Form):
 
 	member = referrer
 
-	if request.session['position'] == "L":
+	if member.member_referrer.count() % 2 == 0:
+	    # Step through downlines continuing if downline has a downline
 	    while member.left is not None:
 		member = member.left
 		continue
 
-	    member.left = Member.objects.create(
-		    referrer=referrer,
-		    phone_number=self.cleaned_data['phone_number']
-		    )
+	    # We finally have the last downline who doesn't have a downline in the
+	    # specified position. And we create one.
+	    member.left = create_member(referrer,
+		    self.cleaned_data['phone_number'])
 	else:
 	    while member.right is not None:
 		member = member.right
 		continue
 
-	    member.right = Member.objects.create(
-		    referrer=referrer,
-		    phone_number=self.cleaned_data['phone_number']
-		    )
+	    member.right = create_member(referrer,
+		    self.cleaned_data['phone_number'])
 
 	member.save()
 
@@ -70,12 +61,5 @@ class UserNumberForm(forms.Form):
 
 	return referrer
 
-def count_downlines(member, position):
-    count = 0
-
-    if position.lower() == "left":
-	while member.left is not None:
-	    count += 1
-	    continue
-
-    return count + 1
+def create_member(referrer, phone_number):
+    return Member.objects.create(referrer=referrer, phone_number=phone_number)

@@ -1,1 +1,4 @@
-Write custom PhoneNumberField or validator.
+- Write custom PhoneNumberField or validator.
+- Generate password for user after successful joining, user name is phone_number.
+- Send notification and login credentials by sms and email upon successful joining. User's email will
+  be fetched from CRM.

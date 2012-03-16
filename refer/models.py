@@ -13,17 +13,3 @@ class Member(models.Model):
 
     def __unicode__(self):
 	return self.phone_number
-
-    def insert(self, position, referree):
-	if position == "L":
-	    if self.left is None:
-		self.left = Member.objects.create(phone_number=referree)
-	    else:
-		self.left.insert(position, referree)
-	    return self.left
-	else:
-	    if self.right is None:
-		self.right = Member.objects.create(phone_number=referree)
-	    else:
-		self.right.insert(position, referree)
-	    return self.right

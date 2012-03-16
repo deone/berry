@@ -1,0 +1,15 @@
+N.B:
+3 categories of subscribers:
+
+- Subscribers before LP launch.
+- New subscribers who were not referred.
+These ones would be created as members of the loyalty programme on the joining
+of their first referree. Since they're either subscribers before the launch or
+they joined without referrals, they would have no referrer in the loyalty program.
+
+- New subscribers who were referred.
+These would join the loyalty programme as soon as they activate their SIM and
+based on some set rules e.g. recharging a certain amount.
+If there are set rules, we would need to include them in the joining checks.
+The referrer is responsible for getting his referree to sign up to the loyalty
+program either via web, SMS or USSD.
