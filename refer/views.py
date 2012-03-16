@@ -51,9 +51,17 @@ def join_final(request, template='refer/final.html', form=UserNumberForm):
     if request.method == "POST":
 	form = form(request.POST)
 	if form.is_valid():
-	    form.save(request)
+	    result = form.save(request)
+	    response = HttpResponse()
+	    response.write(
+		    """
+		    %s has successfully referred %s who is positioned under %s
+		    """
+		    )
+	    # return response
 	    return HttpResponse("""Thank you for joining the Freebird Reward
-		    System.""")
+		    System. Subscriber %s, you now have %s downlines on your
+		    extreme left.""" % result[0].phone_number, result[1])
     else:
 	form = form()
 
