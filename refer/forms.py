@@ -28,8 +28,10 @@ class UserNumberForm(forms.Form):
     phone_number = forms.CharField(label="Your Number", max_length=11)
 
     def save(self, request):
+	subscriber = get_object_or_404(SubscriberInfo,
+		msisdn=request.session['referrer'])
 	referrer, created = Member.objects.get_or_create(
-		phone_number=request.session['referrer'],
+		member=subscriber,
 		)
 
 	member = referrer
@@ -62,4 +64,6 @@ class UserNumberForm(forms.Form):
 	return referrer
 
 def create_member(referrer, phone_number):
-    return Member.objects.create(referrer=referrer, phone_number=phone_number)
+    subscriber = get_object_or_404(SubscriberInfo,
+		msisdn=phone_number)
+    return Member.objects.create(member=subscriber, referrer=referrer)

@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.core.mail import send_mail
 
 from refer.forms import ReferrerNumberForm, UserNumberForm
 from accounts.models import SubscriberInfo
@@ -35,9 +36,11 @@ def join_final(request, template='refer/final.html', form=UserNumberForm):
 	if form.is_valid():
 	    result = form.save(request)
 	    if result:
-		pass	# send email/sms
+		send_mail("Your Freebird Reward System Account", 
+		"""Thank you for joining the Freebird Reward System.""", 
+		"noreply@frs.com", [result.member.user.email], fail_silently=False)
 	    return HttpResponse("""Thank you for joining the Freebird Reward
-	    System""")
+	    System.""")
     else:
 	form = form()
 

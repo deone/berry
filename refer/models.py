@@ -3,7 +3,7 @@ from django.db import models
 import datetime
 
 class Member(models.Model):
-    phone_number = models.CharField(max_length=11, unique=True)
+    member = models.OneToOneField('accounts.SubscriberInfo')
     referrer = models.ForeignKey('self', related_name='member_referrer',
 	    null=True)
     left = models.ForeignKey('self', related_name='member_set_left', null=True)
@@ -12,4 +12,4 @@ class Member(models.Model):
     latest_update_at = models.DateTimeField(default=datetime.datetime.now)
 
     def __unicode__(self):
-	return self.phone_number
+	return self.member.msisdn

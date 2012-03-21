@@ -147,3 +147,6 @@ LOGGING = {
 }
 
 THUMBNAIL_DEBUG = True
+
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 1025
