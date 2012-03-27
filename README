@@ -13,3 +13,8 @@ based on some set rules e.g. recharging a certain amount.
 If there are set rules, we would need to include them in the joining checks.
 The referrer is responsible for getting his referree to sign up to the loyalty
 program either via web, SMS or USSD.
+
+Business Rules
+==============
+1. 1 referral gives N50.
+2. 3 referrals left + 3 referrals right plus recharge of N400.

@@ -1,5 +1,7 @@
+- Disable referral input field on confirm page.
 - Validate prefix e.g. 0805, 0705, 0815.
-- Write custom PhoneNumberField or validator.
+- On first referral, generate password and send notification to referrer too.
+- Write custom PhoneNumberField or validator, custom auth backend.
 - Generate password for user after successful joining, user name is phone_number.
 - Send notification and login credentials by sms and email upon successful joining. User's email will
   be fetched from CRM.
@@ -7,8 +9,3 @@
 Customer Recharge Account Emulator. For demo purposes, recharge = spend.
 - Refill: App that recharges a user's account.
   * Create entry of last recharge date and recharge amount in DB.
-
-Business Rules
-==============
-1. 1 referral gives N50.
-2. 3 referrals left + 3 referrals right plus recharge of N400.

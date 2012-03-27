@@ -34,13 +34,19 @@ def join_final(request, template='refer/final.html', form=UserNumberForm):
     if request.method == "POST":
 	form = form(request.POST)
 	if form.is_valid():
-	    result = form.save(request)
-	    if result:
+	    member, password = form.save(request)
+	    if member:
 		send_mail("Your Freebird Reward System Account", 
-		"""Thank you for joining the Freebird Reward System.""", 
-		"noreply@frs.com", [result.member.user.email], fail_silently=False)
-	    return HttpResponse("""Thank you for joining the Freebird Reward
-	    System.""")
+		"""Thank you for joining the Freebird Reward System.
+		You may log in to the web site with the following credentials:
+		Username: %s
+		Password: %s
+
+		Cheers!
+		""" % (member.subscriber.msisdn, password), 
+		"noreply@frs.com", [member.subscriber.user.email], fail_silently=False)
+		return HttpResponse("""Thank you for joining the Freebird Reward
+	    System. Notifications have been sent to your email address and phone.""")
     else:
 	form = form()
 
