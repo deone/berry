@@ -1,3 +1,4 @@
+- Send email with User.email_user() in refer/forms.
 - Disable referral input field on confirm page.
 - Validate prefix e.g. 0805, 0705, 0815.
 - On first referral, generate password and send notification to referrer too.
