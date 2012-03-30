@@ -101,7 +101,7 @@ class UserNumberForm(forms.Form):
 	self.referrer.latest_update_at = datetime.datetime.now()
 	self.referrer.save()
 	self.referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
-		"""You have a new referree in your network""",
+		"""You have a new referree in your network.""",
 		settings.SENDER_EMAIL)
 
 	request.session.flush()

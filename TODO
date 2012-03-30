@@ -1,11 +1,13 @@
-- Send email with User.email_user() in refer/forms.
-- Disable referral input field on confirm page.
-- Validate prefix e.g. 0805, 0705, 0815.
-- On first referral, generate password and send notification to referrer too.
+- Confirm UserNumber by displaying picture and name before completing
+  registration.
 - Write custom PhoneNumberField or validator, custom auth backend.
-- Generate password for user after successful joining, user name is phone_number.
-- Send notification and login credentials by sms and email upon successful joining. User's email will
-  be fetched from CRM.
+  * Allow user to enter only numbers in field with max_length 11.
+  * Take out leading 0 and append +234 in the form.
+  * Use django-phonenumber-field in model.
+  * N.B: We would have to enter +234... in the admin.
+- Validate prefix e.g. 0805, 0705, 0815.
+- Disable referral input field on confirm page.
+- Write custom auth backend to use user's phone number as username.
 
 Customer Recharge Account Emulator. For demo purposes, recharge = spend.
 - Refill: App that recharges a user's account.

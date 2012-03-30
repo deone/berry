@@ -3,7 +3,6 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.core.mail import send_mail
 
 from refer.forms import ReferrerNumberForm, UserNumberForm
 from accounts.models import SubscriberInfo
