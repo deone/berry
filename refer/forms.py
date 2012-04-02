@@ -14,19 +14,27 @@ class ReferrerNumberForm(forms.Form):
     phone_number = forms.CharField(label="Referrer's Number",
 	    widget=forms.TextInput(attrs={'class': 'integer'}), max_length=11)
 
+    def clean(self):
+	msisdn_prefix = self.cleaned_data['phone_number'][:4]
+	if msisdn_prefix not in settings.MSISDN_PREFIXES:
+	    raise forms.ValidationError("This phone number is not valid.")
+	else:
+	    self.cleaned_data['phone_number'] = "+234" + self.cleaned_data['phone_number'][1:]
+	return self.cleaned_data
+
     def save(self, request):
-	phone_number = "+234" + self.cleaned_data['phone_number'][1:]
-	request.session['referrer'] = phone_number
+	request.session['referrer'] = self.cleaned_data['phone_number']
 
 	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=phone_number)
+		msisdn=self.cleaned_data['phone_number'])
 
 	return subscriber
 
 
-class UserNumberForm(forms.Form):
-    phone_number = forms.CharField(label="Your Number", 
-	    widget=forms.TextInput(attrs={'class': 'integer'}), max_length=11)
+class UserNumberForm(ReferrerNumberForm):
+    def __init__(self, *args, **kwargs):
+	super(UserNumberForm, self).__init__(*args, **kwargs)
+	self.fields['phone_number'].label = "Your Number"
 
     def _create_referree(self):
 	subscriber = get_object_or_404(SubscriberInfo,
@@ -76,15 +84,9 @@ class UserNumberForm(forms.Form):
 	self.position, self.member_above = self._get_member_above()
 	self.member = self._create_referree()
 	member_password = self._set_password("member")
-	self.member.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"""Thank you for joining the Freebird Reward System.
-		You may log in to the web site with the following credentials:
-		Username: %s
-		Password: %s
 
-		Cheers!
-		""" % (self.member.subscriber.msisdn, member_password),
-		settings.SENDER_EMAIL)
+	self.referrer.latest_update_at = datetime.datetime.now()
+	self.referrer.save()
 
 	if self.created:
 	    referrer_password = self._set_password("referrer")
@@ -98,11 +100,19 @@ class UserNumberForm(forms.Form):
 
 		Cheers!
 		""" % (self.member.subscriber.user.get_full_name(),
-		    self.referrer.subscriber.msisdn, referrer_password),
+		    self.referrer.subscriber.get_msisdn(), referrer_password),
 		settings.SENDER_EMAIL)
 
-	self.referrer.latest_update_at = datetime.datetime.now()
-	self.referrer.save()
+	self.member.subscriber.user.email_user("Your Freebird Reward System Account", 
+		"""Thank you for joining the Freebird Reward System.
+		You may log in to the web site with the following credentials:
+		Username: %s
+		Password: %s
+
+		Cheers!
+		""" % (self.member.subscriber.get_msisdn(), member_password),
+		settings.SENDER_EMAIL)
+
 	self.referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
 		"""You have a new referree in your network.""",
 		settings.SENDER_EMAIL)

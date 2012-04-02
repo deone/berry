@@ -1,11 +1,7 @@
 - Confirm UserNumber by displaying picture and name before completing
   registration.
-- Write custom PhoneNumberField or validator, custom auth backend.
-  * Allow user to enter only numbers in field with max_length 11.
-  * Take out leading 0 and append +234 in the form.
-  * Use django-phonenumber-field in model.
-  * N.B: We would have to enter +234... in the admin.
-- Validate prefix e.g. 0805, 0705, 0815.
+- Write custom auth backend so that users can log in with phone number as
+  username.
 - Disable referral input field on confirm page.
 - Write custom auth backend to use user's phone number as username.
 

@@ -152,3 +152,4 @@ THUMBNAIL_DEBUG = True
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
 SENDER_EMAIL = "noreply@frs.com"
+MSISDN_PREFIXES = ['0805', '0705', '0815', '0807']

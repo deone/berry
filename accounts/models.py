@@ -16,6 +16,9 @@ class SubscriberInfo(models.Model):
     class Meta:
 	verbose_name_plural = "Subscriber Info"
 
+    def get_msisdn(self):
+	return "0" + str(self.msisdn)[4:]
+
 
 class RefillHistory(models.Model):
     subscriber = models.ForeignKey(SubscriberInfo)

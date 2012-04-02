@@ -10,7 +10,6 @@ from accounts.models import SubscriberInfo
 def index(request, template='refer/index.html', form=ReferrerNumberForm):
     context = {}
     if request.method == "POST":
-	
 	if request.session.test_cookie_worked():
 	    request.session.delete_test_cookie()
 	else:
