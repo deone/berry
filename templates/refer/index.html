@@ -1,7 +1,9 @@
+{% extends "base.html" %}
 
 {% load thumbnail %}
 
-<form action="{% url join_pre %}" method="post">{% csrf_token %}
+{% block app_body %}
+<form id="join_form" action="{% url join_pre %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     {% if not referrer %}
     <button>Next</button>
@@ -18,3 +20,14 @@
     </p>
     <a href="{% url join_final %}">Confirm</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
 {% endif %}
+{% endblock %}
+
+{% block custom_js %}
+    <script src="{{ STATIC_URL }}js/jquery.numeric.js"></script>
+    <script>
+	$(".numeric").numeric();
+	$(".integer").numeric(false, function()	{
+	    alert("Integers only"); this.value = ""; this.focus();
+	});
+    </script>
+{% endblock %}

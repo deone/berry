@@ -1,16 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from phonenumber_field.modelfields import PhoneNumberField
 
 import datetime
 
 
 class SubscriberInfo(models.Model):
     user = models.OneToOneField('auth.User')
-    msisdn = models.CharField(max_length=11, unique=True)
+    msisdn = PhoneNumberField()
     photo = models.ImageField(upload_to="photos")
 
     def __unicode__(self):
-	return self.msisdn
+	return str(self.msisdn)
 
     class Meta:
 	verbose_name_plural = "Subscriber Info"

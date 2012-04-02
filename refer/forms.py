@@ -11,19 +11,22 @@ import string
 
 
 class ReferrerNumberForm(forms.Form):
-    phone_number = forms.CharField(label="Referrer's Number", max_length=11)
+    phone_number = forms.CharField(label="Referrer's Number",
+	    widget=forms.TextInput(attrs={'class': 'integer'}), max_length=11)
 
     def save(self, request):
-	request.session['referrer'] = self.cleaned_data['phone_number']
+	phone_number = "+234" + self.cleaned_data['phone_number'][1:]
+	request.session['referrer'] = phone_number
 
 	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=self.cleaned_data['phone_number'])
+		msisdn=phone_number)
 
 	return subscriber
 
 
 class UserNumberForm(forms.Form):
-    phone_number = forms.CharField(label="Your Number", max_length=11)
+    phone_number = forms.CharField(label="Your Number", 
+	    widget=forms.TextInput(attrs={'class': 'integer'}), max_length=11)
 
     def _create_referree(self):
 	subscriber = get_object_or_404(SubscriberInfo,
