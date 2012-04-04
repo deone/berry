@@ -36,9 +36,9 @@ class UserNumberForm(ReferrerNumberForm):
 	super(UserNumberForm, self).__init__(*args, **kwargs)
 	self.fields['phone_number'].label = "Your Number"
 
-    def _create_referree(self):
+    def _create_referree(self, referree):
 	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=self.cleaned_data['phone_number'])
+		msisdn=referree)
 	if self.position == 'right':
 	    self.member_above.right = Member.objects.create(subscriber=subscriber,
 		    referrer=self.referrer)
@@ -76,13 +76,21 @@ class UserNumberForm(ReferrerNumberForm):
     def _get_or_create_referrer(self, subscriber):
 	return Member.objects.get_or_create(subscriber=subscriber)
 
+    def check_referree(self, request):
+	request.session['referree'] = self.cleaned_data['phone_number']
+
+	subscriber = get_object_or_404(SubscriberInfo,
+		msisdn=self.cleaned_data['phone_number'])
+
+	return subscriber
+
     def save(self, request):
 	subscriber = get_object_or_404(SubscriberInfo,
 		msisdn=request.session['referrer'])
 
 	self.referrer, self.created = self._get_or_create_referrer(subscriber)
 	self.position, self.member_above = self._get_member_above()
-	self.member = self._create_referree()
+	self.member = self._create_referree(request.session['referree'])
 	member_password = self._set_password("member")
 
 	self.referrer.latest_update_at = datetime.datetime.now()

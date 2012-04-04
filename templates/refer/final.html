@@ -1,9 +1,26 @@
+{% extends "refer/index.html" %}
+
+{% load thumbnail %}
+
+{% block _form %}
 {% if messages %}
     {% for message in messages %}
     <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
     {% endfor %}
 {% endif %}
+
 <form action="{% url join_final %}" method="post">{% csrf_token %}
     {{ form.as_p }}
+    {% if not subscriber %}
     <button>Submit</button>
+    {% endif %}
 </form>
+{% endblock %}
+
+{% block subscriber_confirm %}
+<p>
+    You have chosen {{ subscriber.user.first_name }} {{ subscriber.user.last_name}} as you.
+    If this is correct, please continue.
+</p>
+<a href="{% url join_done %}">Submit</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
+{% endblock %}

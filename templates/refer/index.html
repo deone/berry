@@ -3,22 +3,27 @@
 {% load thumbnail %}
 
 {% block app_body %}
+
+{% block _form %}
 <form id="join_form" action="{% url join_pre %}" method="post">{% csrf_token %}
     {{ form.as_p }}
-    {% if not referrer %}
+    {% if not subscriber %}
     <button>Next</button>
     {% endif %}
 </form>
+{% endblock %}
 
-{% if referrer %}
-    {% thumbnail referrer.photo "97x97" crop="center" as rp %}
-    <img src="{{ rp.url }}" width="{{ rp.width }}" height="{{ rp.height }}"/>
+{% if subscriber %}
+    {% thumbnail subscriber.photo "97x97" crop="center" as sp %}
+    <img src="{{ sp.url }}" width="{{ sp.width }}" height="{{ sp.height }}"/>
     {% endthumbnail %}
+    {% block subscriber_confirm %}
     <p>
-	You have chosen {{ referrer.user.first_name }} {{ referrer.user.last_name}} as your referrer.
+	You have chosen {{ subscriber.user.first_name }} {{ subscriber.user.last_name}} as your referrer.
 	If this is correct, please continue.
     </p>
     <a href="{% url join_final %}">Confirm</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
+    {% endblock %}
 {% endif %}
 {% endblock %}
 

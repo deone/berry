@@ -18,7 +18,7 @@ def index(request, template='refer/index.html', form=ReferrerNumberForm):
 	form = form(request.POST)
 	if form.is_valid():
 	    subscriber = form.save(request)
-	    context['referrer'] = subscriber
+	    context['subscriber'] = subscriber
 
     else:
 	form = form()
@@ -29,13 +29,21 @@ def index(request, template='refer/index.html', form=ReferrerNumberForm):
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 def join_final(request, template='refer/final.html', form=UserNumberForm):
+    context = {}
     if request.method == "POST":
 	form = form(request.POST)
 	if form.is_valid():
-	    member = form.save(request)
-	    return HttpResponse("""Thank you for joining the Freebird Reward
-	System. Notifications have been sent to your email address and phone.""")
+	    subscriber = form.check_referree(request)
+	    context['subscriber'] = subscriber
     else:
 	form = form()
 
-    return render_to_response(template, {'form': form}, context_instance=RequestContext(request))
+    context['form'] = form
+    return render_to_response(template, context, context_instance=RequestContext(request))
+
+def join_done(request, form=UserNumberForm):
+    form = form()
+    member = form.save(request)
+
+    return HttpResponse("""Thank you for joining the Freebird Reward
+	System. Notifications have been sent to your email address and phone.""")
