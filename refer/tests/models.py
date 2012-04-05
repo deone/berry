@@ -4,14 +4,14 @@ from django.shortcuts import get_object_or_404
 from accounts.models import SubscriberInfo
 from refer.models import *
 
-class MemberModelTestCase(TestCase):
+class MemberTestCase(TestCase):
     fixtures = ['authtestdata.json', 'accountstestdata.json']
 
     def setUp(self):
-	referrer_subscriber = get_object_or_404(SubscriberInfo, pk=1)
-	self.referrer = Member.objects.create(subscriber=referrer_subscriber)
+	self.subscriber = get_object_or_404(SubscriberInfo, pk=1)
 
     def test_create_referrer(self):
+	self.referrer = Member.objects.create(subscriber=self.subscriber)
 	self.assertEqual(self.referrer.referrer, None)
 	self.assertEqual(repr(self.referrer), '<Member: 08051111111>')
 	self.assertEqual(self.referrer.password, "")
