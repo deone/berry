@@ -18,8 +18,8 @@ class ReferrerNumberForm(forms.Form):
 	msisdn_prefix = self.cleaned_data['phone_number'][:4]
 	if msisdn_prefix not in settings.MSISDN_PREFIXES:
 	    raise forms.ValidationError("This phone number is not valid.")
-	else:
-	    self.cleaned_data['phone_number'] = "+234" + self.cleaned_data['phone_number'][1:]
+	self.cleaned_data['phone_number'] = "+234" + self.cleaned_data['phone_number'][1:]
+
 	return self.cleaned_data
 
     def save(self, request):
@@ -36,17 +36,29 @@ class UserNumberForm(ReferrerNumberForm):
 	super(UserNumberForm, self).__init__(*args, **kwargs)
 	self.fields['phone_number'].label = "Your Number"
 
+    def clean(self):
+	intl_phone_no = "+234" + self.cleaned_data['phone_number'][1:]
+
+	registered_sub_nos = [str(m.subscriber.msisdn) for m in Member.objects.all()]
+	if intl_phone_no in registered_sub_nos:
+	    raise forms.ValidationError("Error!")
+
+	super(UserNumberForm, self).clean()
+	return self.cleaned_data
+
     def _create_referree(self, referree):
 	subscriber = get_object_or_404(SubscriberInfo,
 		msisdn=referree)
 	if self.position == 'right':
 	    self.member_above.right = Member.objects.create(subscriber=subscriber,
-		    referrer=self.referrer)
+		referrer=self.referrer)
+	    self.member_above.save()
 	    return self.member_above.right
 	else:
 	    self.member_above.left = Member.objects.create(
-		    subscriber=subscriber, 
-		    referrer=self.referrer)
+		subscriber=subscriber, 
+		referrer=self.referrer)
+	    self.member_above.save()
 	    return self.member_above.left
 
     def _get_member_above(self):

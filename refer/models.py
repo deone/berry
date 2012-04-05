@@ -16,7 +16,7 @@ class Member(models.Model):
     latest_update_at = models.DateTimeField(default=datetime.datetime.now)
 
     def __unicode__(self):
-	return self.subscriber.msisdn
+	return str(self.subscriber.msisdn)
 
     def set_password(self, raw_password):
 	algo = 'sha1'
