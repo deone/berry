@@ -22,14 +22,6 @@ class ReferrerNumberForm(forms.Form):
 
 	return self.cleaned_data
 
-    def save(self, request):
-	request.session['referrer'] = self.cleaned_data['phone_number']
-
-	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=self.cleaned_data['phone_number'])
-
-	return subscriber
-
 
 class UserNumberForm(ReferrerNumberForm):
     def __init__(self, *args, **kwargs):
@@ -41,7 +33,7 @@ class UserNumberForm(ReferrerNumberForm):
 
 	registered_sub_nos = [str(m.subscriber.msisdn) for m in Member.objects.all()]
 	if intl_phone_no in registered_sub_nos:
-	    raise forms.ValidationError("Error!")
+	    raise forms.ValidationError("""This subscriber is already registered as a member.""")
 
 	super(UserNumberForm, self).clean()
 	return self.cleaned_data
@@ -88,27 +80,19 @@ class UserNumberForm(ReferrerNumberForm):
     def _get_or_create_referrer(self, subscriber):
 	return Member.objects.get_or_create(subscriber=subscriber)
 
-    def check_referree(self, request):
-	request.session['referree'] = self.cleaned_data['phone_number']
-
+    def save(self, referrer, referree):
 	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=self.cleaned_data['phone_number'])
+		msisdn=referrer)
 
-	return subscriber
-
-    def save(self, request):
-	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=request.session['referrer'])
-
-	self.referrer, self.created = self._get_or_create_referrer(subscriber)
+	self.referrer, self.referrer_created = self._get_or_create_referrer(subscriber)
 	self.position, self.member_above = self._get_member_above()
-	self.member = self._create_referree(request.session['referree'])
+	self.member = self._create_referree(referree)
 	member_password = self._set_password("member")
 
 	self.referrer.latest_update_at = datetime.datetime.now()
 	self.referrer.save()
 
-	if self.created:
+	if self.referrer_created:
 	    referrer_password = self._set_password("referrer")
 	    self.referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
 		"""Thank you for joining the Freebird Reward System. You were
@@ -136,7 +120,5 @@ class UserNumberForm(ReferrerNumberForm):
 	self.referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
 		"""You have a new referree in your network.""",
 		settings.SENDER_EMAIL)
-
-	request.session.flush()
 
 	return self.member
