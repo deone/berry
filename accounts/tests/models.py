@@ -9,7 +9,7 @@ from accounts.models import SubscriberInfo
 PICTURE_LOCATION = '/home/deone/Pictures/Me/20110625_003b.jpg'
 
 class SubscriberInfoTestCase(TestCase):
-    fixtures = ['authtestdata.json']
+    fixtures = ['usertestdata.json']
 
     def setUp(self):
 	self.user = get_object_or_404(User, pk=5)
