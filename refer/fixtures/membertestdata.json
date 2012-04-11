@@ -1,0 +1,28 @@
+[
+    {
+        "pk": 1, 
+        "model": "refer.member", 
+        "fields": {
+            "right": null, 
+            "referrer": null, 
+            "subscriber": 2, 
+            "latest_update_at": "2012-04-10 11:59:38", 
+            "left": 2, 
+            "password": "sha1$04754$181d56833c0ce938dabc960826da6710896b116a", 
+            "date_joined": "2012-04-10 11:59:38"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "refer.member", 
+        "fields": {
+            "right": null, 
+            "referrer": 1, 
+            "subscriber": 3, 
+            "latest_update_at": "2012-04-10 11:59:38", 
+            "left": null, 
+            "password": "sha1$a4505$fcc809ee2bedfb138429f98d203f4d63c13b224a", 
+            "date_joined": "2012-04-10 11:59:38"
+        }
+    }
+]
