@@ -46,11 +46,16 @@ def join_final(request, template='refer/final.html', form=UserNumberForm):
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 def join_done(request, form=UserNumberForm):
-    referrer, referree = request.session['referrer'], request.session['referree']
-    form = form()
-    member = form.save(referrer, referree)
+    if hasattr(request.session, 'referrer') and hasattr(request.session,
+	    'referree'):
+	referrer, referree = request.session['referrer'], request.session['referree']
+	form = form()
+	member = form.save(referrer, referree)
 
-    request.session.flush()
+	request.session.flush()
 
-    return HttpResponse("""Thank you for joining the Freebird Reward
-	System. Notifications have been sent to your email address and phone.""")
+	return HttpResponse("""Thank you for joining the Freebird Reward
+	    System. Notifications have been sent to your email address and phone.""")
+    else:
+	return HttpResponse("Please commence your registration <a href='%s'>here</a>." %
+		reverse('join_pre'))
