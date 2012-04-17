@@ -5,7 +5,7 @@ from refer.forms import *
 
 class ReferrerNumberFormTestCase(TestCase):
 
-	def test_valid_number(self):
+	def test_invalid_number(self):
 	    data = {
 		'phone_number': '08022334455'
 		}
@@ -31,11 +31,20 @@ class UserNumberFormTestCase(ReferrerNumberFormTestCase):
 	self.assertFalse(form.is_valid())
 	self.assertEqual(form.errors['__all__'], [u"""This subscriber is already registered as a member."""])
 
-    def test_success(self):
+    def test_success_new_referrer(self):
 	referrer, referree = "+2348053333333", "+2348054444444"
 	form = UserNumberForm()
 	m = form.save(referrer, referree)
 	self.assertEqual(repr(form.referrer), "<Member: +2348053333333>")
-	self.assertTrue(repr(form.referrer_created))
+	self.assertTrue(form.referrer_created)
 	self.assertEqual(len(mail.outbox), 3)
+	self.assertEqual(repr(m), "<Member: +2348054444444>")
+
+    def test_success_existing_referrer(self):
+	referrer, referree = "+2348051111111", "+2348054444444"
+	form = UserNumberForm()
+	m = form.save(referrer, referree)
+	self.assertEqual(repr(form.referrer), "<Member: +2348051111111>")
+	self.assertFalse(form.referrer_created)
+	self.assertEqual(len(mail.outbox), 2)
 	self.assertEqual(repr(m), "<Member: +2348054444444>")

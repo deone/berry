@@ -19,7 +19,7 @@
 
 {% block subscriber_confirm %}
 <p>
-    You have chosen {{ subscriber.user.first_name }} {{ subscriber.user.last_name}} as you.
+    You have chosen {{ subscriber.user.get_full_name }} as you.
     If this is correct, please continue.
 </p>
 <a href="{% url join_done %}">Submit</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>

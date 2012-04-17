@@ -19,7 +19,7 @@
     {% endthumbnail %}
     {% block subscriber_confirm %}
     <p>
-	You have chosen {{ subscriber.user.first_name }} {{ subscriber.user.last_name}} as your referrer.
+	You have chosen {{ subscriber.user.get_full_name }} as your referrer.
 	If this is correct, please continue.
     </p>
     <a href="{% url join_final %}">Confirm</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
