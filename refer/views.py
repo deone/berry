@@ -3,9 +3,12 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from refer.forms import ReferrerNumberForm, UserNumberForm
 from accounts.models import SubscriberInfo
+from refer.models import Member
 
 def index(request, template='refer/index.html', form=ReferrerNumberForm):
     context = {}
@@ -59,3 +62,13 @@ def join_done(request, form=UserNumberForm):
     else:
 	return HttpResponse("Please commence your registration <a href='%s'>here</a>." %
 		reverse('join_pre'))
+
+@receiver(post_save, sender=Member)
+def check_eligibility(sender, instance, **kwargs):
+    """
+    We need to traverse the tree everytime a new member is added, and apportion
+    some form of points or note their states.
+    Modified Pre-order Tree Traversal might be the secret to this.
+    """
+    if kwargs['created']:
+	pass

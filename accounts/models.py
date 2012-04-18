@@ -27,3 +27,6 @@ class RefillHistory(models.Model):
 
     def __unicode__(self):
 	return "%s %s" % (self.subscriber.msisdn, self.last_recharge_amount)
+
+    class Meta:
+	verbose_name_plural = "Refill History"
