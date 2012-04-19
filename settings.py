@@ -120,6 +120,8 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'accounts',
     'refer',
+    'mptt',
+    'myapp',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -153,3 +155,15 @@ EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
 SENDER_EMAIL = "noreply@frs.com"
 MSISDN_PREFIXES = ['0805', '0705', '0815', '0807']
+MAX_CHILDREN = 2
+
+GLP = 500
+# Recharge commission (per week) for 1 GLP right + 1 GLP left (from both direct and indirect referrals)
+COMISSION = .1 * 500
+# Amount of talk spend member must make (per week) to be able to earn commission.
+QUALIFYING_SPEND = 200
+
+# Bonus per referral - This reward is given at the completion of a level.
+BONUS_PER_REFERRAL = 10
+# No of direct referrals required to qualify for bonus
+BONUS_QUALIFYING_NO_OF_REFERRALS = 2

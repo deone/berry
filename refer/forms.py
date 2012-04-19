@@ -80,12 +80,24 @@ class UserNumberForm(ReferrerNumberForm):
     def _get_or_create_referrer(self, subscriber):
 	return Member.objects.get_or_create(subscriber=subscriber)
 
-    def save(self, referrer, referree):
-	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=referrer)
+    def save(self, referrer_no, referral_no):
+	referrer_subscriber = get_object_or_404(SubscriberInfo,
+		msisdn=referrer_no)
+	referral_subscriber = get_object_or_404(SubscriberInfo,
+		msisdn=referral_no)
 
-	self.referrer, self.referrer_created = self._get_or_create_referrer(subscriber)
-	self.position, self.member_above = self._get_member_above()
+	referrer, created = Member.objects.get_or_create(subscriber=referrer_subscriber)
+
+	if len(referrer.get_leafnodes()) < settings.MAX_CHILDREN:
+	    parent = referrer
+	else:
+	    leaf_node_ids = [m.id for m in referrer.get_leafnodes()]
+	    parent = referrer.get_leafnodes().get(pk=min(leaf_node_ids))
+
+	referral = Member.objects.create(subscriber=referral_subscriber,
+		    referrer=referrer, parent=parent)
+
+	"""self.position, self.member_above = self._get_member_above()
 	self.member = self._create_referree(referree)
 	member_password = self._set_password("member")
 
@@ -95,7 +107,7 @@ class UserNumberForm(ReferrerNumberForm):
 	if self.referrer_created:
 	    referrer_password = self._set_password("referrer")
 	    self.referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"""Thank you for joining the Freebird Reward System. You were
+		"Thank you for joining the Freebird Reward System. You were
 		automatically registered as a result of the registration of your
 		first referree, %s
 		You may log in to the web site with the following credentials:
@@ -103,22 +115,22 @@ class UserNumberForm(ReferrerNumberForm):
 		Password: %s
 
 		Cheers!
-		""" % (self.member.subscriber.user.get_full_name(),
+		" % (self.member.subscriber.user.get_full_name(),
 		    self.referrer.subscriber.get_msisdn(), referrer_password),
 		settings.SENDER_EMAIL)
 
 	self.member.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"""Thank you for joining the Freebird Reward System.
+		"Thank you for joining the Freebird Reward System.
 		You may log in to the web site with the following credentials:
 		Username: %s
 		Password: %s
 
 		Cheers!
-		""" % (self.member.subscriber.get_msisdn(), member_password),
+		" % (self.member.subscriber.get_msisdn(), member_password),
 		settings.SENDER_EMAIL)
 
 	self.referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
-		"""You have a new referree in your network.""",
+		"You have a new referree in your network.",
 		settings.SENDER_EMAIL)
 
-	return self.member
+	return self.member"""

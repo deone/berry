@@ -1,0 +1,19 @@
+{% load mptt_tags %}
+<ul>
+    {% recursetree members %}
+    <li>
+	{{ node.subscriber }} id {{ node.id }} referred by {{ node.referrer }}
+	{% if not node.is_leaf_node %}
+	<ul class="children">
+	    {{ children }}
+	</ul>
+	{% endif %}
+    </li>
+    {% endrecursetree %}
+</ul>
+
+<div>
+    {% for k, v in descendant_count.items %}
+    <p> {{ k }} {{ v }}</p>
+    {% endfor %}
+</div>
