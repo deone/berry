@@ -9,22 +9,17 @@ class MemberTestCase(TestCase):
     fixtures = ['usertestdata.json', 'subscriberinfotestdata.json']
 
     def setUp(self):
-	self.subscriber = get_object_or_404(SubscriberInfo, pk=2)
-	self.referrer = Member.objects.create(subscriber=self.subscriber)
+	subscriber = get_object_or_404(SubscriberInfo, pk=9)
+	self.referrer = Member.objects.create(subscriber=subscriber)
 
     def test_create_referrer(self):
-	self.assertEqual(self.referrer.referrer, None)
-	self.assertEqual(repr(self.referrer), '<Member: +2348051111111>')
+	self.assertEqual(repr(self.referrer), '<Member: +2348050999999>')
+	self.assertEqual(self.referrer.parent, None)
 	self.assertEqual(self.referrer.password, "")
-	self.assertEqual(self.referrer.right, None)
-	self.assertEqual(self.referrer.left, None)
 
-    def test_create_referree(self):
-	referree_subscriber = get_object_or_404(SubscriberInfo, pk=3)
-	self.referrer.left = Member.objects.create(
-		referrer = self.referrer, 
-		subscriber=referree_subscriber)
-	self.referree = self.referrer.left
+    def test_create_referral(self):
+	rs = get_object_or_404(SubscriberInfo, pk=10)
+	rfrl = Member.objects.create(subscriber=rs, parent=self.referrer)
 
-	self.assertEqual(repr(self.referree), '<Member: +2348052222222>')
-	self.assertEqual(self.referree.referrer, self.referrer)
+	self.assertEqual(repr(rfrl), '<Member: +2348050000000>')
+	self.assertEqual(rfrl.parent, self.referrer)

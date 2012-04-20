@@ -24,7 +24,7 @@ class ReferViewsTestCase(TestCase):
 	self.assertTrue(response.templates[0].name, 'refer/index.html')
 	self.assertTrue(response.templates[1].name, 'base.html')
 	self.assertTrue('subscriber' in response.context)
-	self.assertEqual(response.context['subscriber'].user.get_full_name(), "Ade Olu")
+	self.assertEqual(response.context['subscriber'].user.get_full_name(), "K K")
 	self.assertTrue('form' in response.context)
 	self.assertEqual(response.status_code, 200)
 
@@ -42,7 +42,7 @@ class ReferViewsTestCase(TestCase):
 	response = self.client.post(reverse('join_final'), data)
 	self.assertTrue(response.templates[0].name, 'refer/final.html')
 	self.assertTrue(response.templates[1].name, 'base.html')
-	self.assertEqual(response.context['subscriber'].user.get_full_name(), "Ade Olu")
+	self.assertEqual(response.context['subscriber'].user.get_full_name(), "K K")
 	self.assertTrue('subscriber' in response.context)
 	self.assertTrue('form' in response.context)
 	self.assertEqual(response.status_code, 200)
@@ -50,10 +50,10 @@ class ReferViewsTestCase(TestCase):
     def test_join_done(self):
 	s = self.client.session
 	s['referrer'] = '+2348051111111'
-	s['referree'] = '+2348052222222'
+	s['referral'] = '+2348051222222'
 	s.save()
 	response = self.client.get(reverse('join_done'))
-	self.assertContains(response, "Ade Ola, thank you for joining the Freebird")
+	self.assertContains(response, "L L, thank you for joining the Freebird")
 
     def test_join_done_invalid_session(self):
 	response = self.client.get(reverse('join_done'))

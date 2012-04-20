@@ -3,6 +3,8 @@ from django.core import mail
 
 from refer.forms import *
 
+from datetime import datetime
+
 class ReferrerNumberFormTestCase(TestCase):
 
 	def test_invalid_number(self):
@@ -31,20 +33,12 @@ class UserNumberFormTestCase(ReferrerNumberFormTestCase):
 	self.assertFalse(form.is_valid())
 	self.assertEqual(form.errors['__all__'], [u"""This subscriber is already registered as a member."""])
 
-    def test_success_new_referrer(self):
-	referrer, referree = "+2348053333333", "+2348054444444"
+    def test_success(self):
+	rf, rfrl = "+2348050666666", "+2348050444444"
 	form = UserNumberForm()
-	m = form.save(referrer, referree)
-	self.assertEqual(repr(form.referrer), "<Member: +2348053333333>")
-	self.assertTrue(form.referrer_created)
-	self.assertEqual(len(mail.outbox), 3)
-	self.assertEqual(repr(m), "<Member: +2348054444444>")
-
-    def test_success_existing_referrer(self):
-	referrer, referree = "+2348051111111", "+2348054444444"
-	form = UserNumberForm()
-	m = form.save(referrer, referree)
-	self.assertEqual(repr(form.referrer), "<Member: +2348051111111>")
-	self.assertFalse(form.referrer_created)
+	r, m = form.save(rf, rfrl)
 	self.assertEqual(len(mail.outbox), 2)
-	self.assertEqual(repr(m), "<Member: +2348054444444>")
+	self.assertEqual(repr(m), "<Member: +2348050444444>")
+	# Check whether referrer is newly created.
+	self.assertEqual(r.date_joined.second, datetime.now().second)
+	self.assertEqual(m.date_joined.second, r.latest_update_at.second)
