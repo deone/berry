@@ -1,6 +1,12 @@
 - Disable referral input field on confirm page.
-- Write custom auth backend to use phone number as username.
 
 Customer Recharge Account Emulator. For demo purposes, recharge = spend.
 - Refill: App that recharges a user's account.
   * Create entry of last recharge date and recharge amount in DB.
+
+What's next?
+Write and test:
+- Custom auth backend to use phone number as username.
+- Auth feature.
+- Reward script.
+- Styles and finesse.

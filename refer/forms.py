@@ -38,76 +38,37 @@ class UserNumberForm(ReferrerNumberForm):
 	super(UserNumberForm, self).clean()
 	return self.cleaned_data
 
-    def _create_referree(self, referree):
-	subscriber = get_object_or_404(SubscriberInfo,
-		msisdn=referree)
-	if self.position == 'right':
-	    self.member_above.right = Member.objects.create(subscriber=subscriber,
-		referrer=self.referrer)
-	    self.member_above.save()
-	    return self.member_above.right
-	else:
-	    self.member_above.left = Member.objects.create(
-		subscriber=subscriber, 
-		referrer=self.referrer)
-	    self.member_above.save()
-	    return self.member_above.left
-
-    def _get_member_above(self):
-	""" Get member to position referree under """
-	member = self.referrer
-	if member.member_referrer.count() % 2 == 0:
-	    while member.left is not None:
-		member = member.left
-		continue
-	    return "left", member
-	else:
-	    while member.right is not None:
-		member = member.right
-		continue
-	    return "right", member
-
-    def _set_password(self, _type):
-	raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
-	if _type == "member":
-	    self.member.set_password(raw_password)
-	    self.member.save()
-	else:
-	    self.referrer.set_password(raw_password)
-	    self.referrer.save()
-	return raw_password
-
-    def _get_or_create_referrer(self, subscriber):
-	return Member.objects.get_or_create(subscriber=subscriber)
-
     def save(self, referrer_no, referral_no):
 	referrer_subscriber = get_object_or_404(SubscriberInfo,
 		msisdn=referrer_no)
 	referral_subscriber = get_object_or_404(SubscriberInfo,
 		msisdn=referral_no)
 
+	# Get referrer or create if he doesn't already exist.
 	referrer, created = Member.objects.get_or_create(subscriber=referrer_subscriber)
 
+	# Get parent - earliest added leaf node of referrer.
 	if len(referrer.get_leafnodes()) < settings.MAX_CHILDREN:
 	    parent = referrer
 	else:
 	    leaf_node_ids = [m.id for m in referrer.get_leafnodes()]
 	    parent = referrer.get_leafnodes().get(pk=min(leaf_node_ids))
 
-	referral = Member.objects.create(subscriber=referral_subscriber,
-		    referrer=referrer, parent=parent)
+	# Create referral model instance, don't save yet.
+	referral = Member(subscriber=referral_subscriber, referrer=referrer, parent=parent)
 
-	"""self.position, self.member_above = self._get_member_above()
-	self.member = self._create_referree(referree)
-	member_password = self._set_password("member")
+	# Set referral password and save.
+	referral_raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
+	referral.set_password(referral_raw_password)
+	referral.save()
 
-	self.referrer.latest_update_at = datetime.datetime.now()
-	self.referrer.save()
-
-	if self.referrer_created:
-	    referrer_password = self._set_password("referrer")
-	    self.referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"Thank you for joining the Freebird Reward System. You were
+	# Send notifications to referrer and referral.
+	# If referrer is new, send him a welcome email.
+	if created:
+	    referrer_raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
+	    referrer.set_password(referrer_raw_password)
+	    referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
+		"""Thank you for joining the Freebird Reward System. You were
 		automatically registered as a result of the registration of your
 		first referree, %s
 		You may log in to the web site with the following credentials:
@@ -115,22 +76,26 @@ class UserNumberForm(ReferrerNumberForm):
 		Password: %s
 
 		Cheers!
-		" % (self.member.subscriber.user.get_full_name(),
-		    self.referrer.subscriber.get_msisdn(), referrer_password),
+		""" % (referral.subscriber.user.get_full_name(),
+		    referrer.subscriber.get_msisdn(), referrer_raw_password),
 		settings.SENDER_EMAIL)
+	else:
+	    referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
+		    "You have a new referree in your network.",
+		    settings.SENDER_EMAIL)
 
-	self.member.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"Thank you for joining the Freebird Reward System.
+	# Update referrer with timestamp - to be able to track last activity.
+	referrer.latest_update_at = datetime.datetime.now()
+	referrer.save()
+
+	referral.subscriber.user.email_user("Your Freebird Reward System Account", 
+		"""Thank you for joining the Freebird Reward System.
 		You may log in to the web site with the following credentials:
 		Username: %s
 		Password: %s
 
 		Cheers!
-		" % (self.member.subscriber.get_msisdn(), member_password),
+		""" % (referral.subscriber.get_msisdn(), referral_raw_password),
 		settings.SENDER_EMAIL)
 
-	self.referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
-		"You have a new referree in your network.",
-		settings.SENDER_EMAIL)
-
-	return self.member"""
+	return referrer, referral

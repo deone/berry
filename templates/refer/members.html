@@ -2,7 +2,7 @@
 <ul>
     {% recursetree members %}
     <li>
-	{{ node.subscriber }} id {{ node.id }} referred by {{ node.referrer }}
+	{{ node.id }}. {{ node.subscriber.get_msisdn }} Referrer: {{ node.referrer.subscriber.get_msisdn }}
 	{% if not node.is_leaf_node %}
 	<ul class="children">
 	    {{ children }}
@@ -14,6 +14,6 @@
 
 <div>
     {% for k, v in descendant_count.items %}
-    <p> {{ k }} {{ v }}</p>
+    <p>{{ k.subscriber.get_msisdn }} {{ v }}</p>
     {% endfor %}
 </div>

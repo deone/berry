@@ -77,13 +77,13 @@ def join_done(request, form=UserNumberForm):
     if request.session.get('referrer') and request.session.get('referral'):
 	referrer, referral = request.session['referrer'], request.session['referral']
 	form = form()
-	member = form.save(referrer, referral)
+	referrer, referral = form.save(referrer, referral)
 
 	request.session.flush()
 
-	return HttpResponse("""Thank you for joining the Freebird Reward
+	return HttpResponse("""%s, thank you for joining the Freebird Reward
 	    System. Notifications have been sent to your email address and
-	    phone.""")
+	    phone.""" % referral.subscriber.user.get_full_name())
     else:
 	return HttpResponse("Please commence your registration <a href='%s'>here</a>." %
 		reverse('join_pre'))
