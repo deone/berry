@@ -149,6 +149,13 @@ LOGGING = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'backend.MSISDNAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+LOGIN_REDIRECT_URL = '/home'
+
 THUMBNAIL_DEBUG = True
 
 EMAIL_HOST = "localhost"

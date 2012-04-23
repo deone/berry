@@ -8,17 +8,12 @@ admin.autodiscover()
 import os
 
 urlpatterns = patterns('',
+    (r'^', include('accounts.urls')),
     url(r'^join/pre$', 'refer.views.index', name='join_pre'),
     url(r'^join/final$', 'refer.views.join_final', name='join_final'),
     url(r'^join/done$', 'refer.views.join_done', name='join_done'),
     (r'^members$', 'refer.views.show_members'),
     (r'^genres/$', 'myapp.views.show_genres'),
-    # url(r'^berry/', include('berry.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
 

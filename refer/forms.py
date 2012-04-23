@@ -54,19 +54,20 @@ class UserNumberForm(ReferrerNumberForm):
 	    leaf_node_ids = [m.id for m in referrer.get_leafnodes()]
 	    parent = referrer.get_leafnodes().get(pk=min(leaf_node_ids))
 
-	# Create referral model instance, don't save yet.
-	referral = Member(subscriber=referral_subscriber, referrer=referrer, parent=parent)
+	# Create referral model instance.
+	referral = Member.objects.create(subscriber=referral_subscriber, referrer=referrer, parent=parent)
 
 	# Set referral password and save.
 	referral_raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
-	referral.set_password(referral_raw_password)
-	referral.save()
+	referral.subscriber.user.set_password(referral_raw_password)
+	referral.subscriber.user.save()
 
 	# Send notifications to referrer and referral.
 	# If referrer is new, send him a welcome email.
 	if created:
 	    referrer_raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
-	    referrer.set_password(referrer_raw_password)
+	    referrer.subscriber.user.set_password(referrer_raw_password)
+	    referrer.subscriber.user.save()
 	    referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
 		"""Thank you for joining the Freebird Reward System. You were
 		automatically registered as a result of the registration of your
