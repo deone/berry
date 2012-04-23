@@ -1,0 +1,14 @@
+<form method="post" action="{% url login %}?next={{ next }}">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <p>
+	<label>Phone Number</label>
+	{{ form.username }}
+    </p>
+    <p>
+	<label>{{ form.password.label }}</label>
+	{{ form.password }}
+    </p>
+    <p>
+	<input class="btn" type="submit" value="Login"/>
+    </p>
+</form>
