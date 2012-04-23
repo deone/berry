@@ -11,7 +11,6 @@
             "subscriber": 1, 
             "latest_update_at": "2012-04-20 08:23:31", 
             "tree_id": 1, 
-            "password": "sha1$4a13d$ac3372537521efa96d31af2e6f53ea4c653f53da", 
             "date_joined": "2012-04-20 08:14:07"
         }
     }, 
@@ -27,7 +26,6 @@
             "subscriber": 2, 
             "latest_update_at": "2012-04-20 08:14:07", 
             "tree_id": 1, 
-            "password": "sha1$f20c0$89b41099c661413883e2ffa70939f20e61fc0eb9", 
             "date_joined": "2012-04-20 08:14:07"
         }
     }, 
@@ -43,7 +41,6 @@
             "subscriber": 3, 
             "latest_update_at": "2012-04-20 08:23:26", 
             "tree_id": 1, 
-            "password": "sha1$e3356$d5a59dc0030eb605280a1b9e61c7cc5bb0cac081", 
             "date_joined": "2012-04-20 08:23:26"
         }
     }, 
@@ -59,7 +56,6 @@
             "subscriber": 11, 
             "latest_update_at": "2012-04-20 08:15:37", 
             "tree_id": 2, 
-            "password": "sha1$9912e$a08dd058c10e4b47112db3a330f980a4ca60e2fe", 
             "date_joined": "2012-04-20 08:15:37"
         }
     }, 
@@ -75,7 +71,6 @@
             "subscriber": 12, 
             "latest_update_at": "2012-04-20 08:15:37", 
             "tree_id": 2, 
-            "password": "sha1$5f5d3$2181201bb3fcd9ae7ceb6dce1f65b5c2e8354174", 
             "date_joined": "2012-04-20 08:15:37"
         }
     }

@@ -15,7 +15,6 @@ class MemberTestCase(TestCase):
     def test_create_referrer(self):
 	self.assertEqual(repr(self.referrer), '<Member: +2348050999999>')
 	self.assertEqual(self.referrer.parent, None)
-	self.assertEqual(self.referrer.password, "")
 
     def test_create_referral(self):
 	rs = get_object_or_404(SubscriberInfo, pk=10)
