@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.conf import settings
 
 from accounts.models import SubscriberInfo
-from refer.models import Member
+from refer.models import Member, Rank
 
 import datetime
 import random
@@ -47,56 +47,61 @@ class UserNumberForm(ReferrerNumberForm):
 	# Get referrer or create if he doesn't already exist.
 	referrer, created = Member.objects.get_or_create(subscriber=referrer_subscriber)
 
-	# Get parent - earliest added leaf node of referrer.
-	if len(referrer.get_leafnodes()) < settings.MAX_CHILDREN:
-	    parent = referrer
-	else:
-	    leaf_node_ids = [m.id for m in referrer.get_leafnodes()]
-	    parent = referrer.get_leafnodes().get(pk=min(leaf_node_ids))
+	parent = get_parent(referrer)
 
-	# Create referral model instance.
+	# Create referral model instance, also set rank to 0.
 	referral = Member.objects.create(subscriber=referral_subscriber, referrer=referrer, parent=parent)
+	referral_password = set_password(referral)
+	set_rank(referral)
 
-	# Set referral password and save.
-	referral_raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
-	referral.subscriber.user.set_password(referral_raw_password)
-	referral.subscriber.user.save()
-
-	# Send notifications to referrer and referral.
-	# If referrer is new, send him a welcome email.
 	if created:
-	    referrer_raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
-	    referrer.subscriber.user.set_password(referrer_raw_password)
-	    referrer.subscriber.user.save()
+	    referrer_password = set_password(referrer)
+	    set_rank(referrer)
 	    referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"""Thank you for joining the Freebird Reward System. You were
-		automatically registered as a result of the registration of your
-		first referree, %s
-		You may log in to the web site with the following credentials:
-		Username: %s
-		Password: %s
+	    """Thank you for joining the Freebird Reward System. You were
+	    automatically registered as a result of the registration of your
+	    first referree, %s
+	    You may log in to the web site with the following credentials:
+	    Username: %s
+	    Password: %s
 
-		Cheers!
-		""" % (referral.subscriber.user.get_full_name(),
-		    referrer.subscriber.get_msisdn(), referrer_raw_password),
-		settings.SENDER_EMAIL)
+	    Cheers!
+	    """ % (referral.subscriber.user.get_full_name(),
+		referrer.subscriber.get_msisdn(), referrer_password),
+	    settings.SENDER_EMAIL)
 	else:
 	    referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
-		    "You have a new referree in your network.",
-		    settings.SENDER_EMAIL)
-
-	# Update referrer with timestamp - to be able to track last activity.
-	referrer.latest_update_at = datetime.datetime.now()
-	referrer.save()
-
-	referral.subscriber.user.email_user("Your Freebird Reward System Account", 
-		"""Thank you for joining the Freebird Reward System.
-		You may log in to the web site with the following credentials:
-		Username: %s
-		Password: %s
-
-		Cheers!
-		""" % (referral.subscriber.get_msisdn(), referral_raw_password),
+		"You have a new referree in your network.",
 		settings.SENDER_EMAIL)
 
+	referral.subscriber.user.email_user("Your Freebird Reward System Account", 
+	    """Thank you for joining the Freebird Reward System.
+	    You may log in to the web site with the following credentials:
+	    Username: %s
+	    Password: %s
+
+	    Cheers!
+	    """ % (referral.subscriber.get_msisdn(), referral_password),
+	    settings.SENDER_EMAIL)
+
 	return referrer, referral
+
+def get_parent(referrer):
+    if referrer.get_children().count() < 2:
+	return referrer
+    else:
+	descendants = referrer.get_descendants()
+	leaf_node_ids = [m.id for m in descendants if m.is_leaf_node()]
+	return descendants.get(pk=min(leaf_node_ids))
+
+def set_rank(member):
+    Rank.objects.create(member=member, rank=0)
+
+def set_password(member):
+    raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
+    member.subscriber.user.save()
+
+    return raw_password
+
+def notify(member, subject, message):
+    member.subscriber.user.email_user(subject, message, settings.SENDER_EMAIL)

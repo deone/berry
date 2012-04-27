@@ -6,7 +6,6 @@ Customer Recharge Account Emulator. For demo purposes, recharge = spend.
 
 What's next?
 Write and test:
-- Custom auth backend to use phone number as username.
-- Auth feature.
-- Reward script.
+- For parent during save().
+- Signal on save() to inform referrer when a level is initiated.
 - Styles and finesse.
