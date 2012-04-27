@@ -57,32 +57,9 @@ class UserNumberForm(ReferrerNumberForm):
 	if created:
 	    referrer_password = set_password(referrer)
 	    set_rank(referrer)
-	    referrer.subscriber.user.email_user("Your Freebird Reward System Account", 
-	    """Thank you for joining the Freebird Reward System. You were
-	    automatically registered as a result of the registration of your
-	    first referree, %s
-	    You may log in to the web site with the following credentials:
-	    Username: %s
-	    Password: %s
-
-	    Cheers!
-	    """ % (referral.subscriber.user.get_full_name(),
-		referrer.subscriber.get_msisdn(), referrer_password),
-	    settings.SENDER_EMAIL)
-	else:
-	    referrer.subscriber.user.email_user("New Referree in your Freebird Reward System Account", 
-		"You have a new referree in your network.",
-		settings.SENDER_EMAIL)
-
-	referral.subscriber.user.email_user("Your Freebird Reward System Account", 
-	    """Thank you for joining the Freebird Reward System.
-	    You may log in to the web site with the following credentials:
-	    Username: %s
-	    Password: %s
-
-	    Cheers!
-	    """ % (referral.subscriber.get_msisdn(), referral_password),
-	    settings.SENDER_EMAIL)
+	    
+	notify(referrer, 'referrer', referrer_password, created)
+	notify(referral, 'referral', referral_password)
 
 	return referrer, referral
 
@@ -103,5 +80,25 @@ def set_password(member):
 
     return raw_password
 
-def notify(member, subject, message):
+def notify(member, mtype, password, created=False):
+    subject = "Your Freebird Reward System Account"
+    message = """Thank you for joining the Freebird Reward System.
+	    You may log in to the web site with the following credentials:
+	    Username: %s
+	    Password: %s
+
+	    Cheers!
+	    """ % (member.subscriber.get_msisdn(), password)
+
+    if mtype == 'referrer':
+	if created:
+	    message = message + """P.S: You were automatically registered as a 
+	    result of the registration of your first 
+	    referree, %s""" % member.referrals.all()[0].subscriber.user.get_full_name()
+	else:
+	    subject = "New Referral in your Freebird Reward System Account"
+	    message = "You have a new referral in your network."
+    else:
+	pass
+
     member.subscriber.user.email_user(subject, message, settings.SENDER_EMAIL)

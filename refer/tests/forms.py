@@ -41,4 +41,3 @@ class UserNumberFormTestCase(ReferrerNumberFormTestCase):
 	self.assertEqual(repr(m), "<Member: +2348050444444>")
 	# Check whether referrer is newly created.
 	self.assertEqual(r.date_joined.second, datetime.now().second)
-	self.assertEqual(m.date_joined.second, r.latest_update_at.second)
