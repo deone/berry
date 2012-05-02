@@ -10,9 +10,12 @@ class MSISDNAuthBackend(object):
 	except SubscriberInfo.DoesNotExist:
 	    return None
 	else:
-	    user = User.objects.get(pk=subscriber.user_id)
-	    if user.check_password(password):
-		return user 
+	    try:
+		user = User.objects.get(pk=subscriber.user_id)
+		if user.check_password(password):
+		    return user 
+	    except User.DoesNotExist:
+		return None
 
     def get_user(self, user_id):
 	try:

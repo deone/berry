@@ -2,7 +2,17 @@
 <ul>
     {% recursetree members %}
     <li>
-	{{ node.id }}. {{ node.subscriber.get_msisdn }} Referrer: {{ node.referrer.subscriber.get_msisdn }}
+	<p>{{ node.id }}. {{ node.subscriber.get_msisdn }} 
+	{% if not node.referrer %}
+	    Referrer: None
+	{% else %}
+	    Referrer: {{ node.referrer.subscriber.get_msisdn }} 
+	{% endif %}
+	{% ifequal node.rank.rank 0 %}
+	    Rank: None
+	{% else %}
+	    Rank: {{ node.rank.get_rank_display }}
+	{% endifequal %}
 	{% if not node.is_leaf_node %}
 	<ul class="children">
 	    {{ children }}
