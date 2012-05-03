@@ -3,7 +3,7 @@ from refer.models import *
 
 from random import choice
 
-subscribers = SubscriberInfo.objects.all()
+subscribers = SubscriberInfo.objects.all()[:127]
 
 def get_parent():
     while Member.objects.count() != 0:
