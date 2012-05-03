@@ -5,10 +5,13 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.conf import settings
 
 from refer.forms import ReferrerNumberForm, UserNumberForm
-from accounts.models import SubscriberInfo
 from refer.models import Member
+from accounts.models import *
+
+from datetime import datetime
 
 
 def show_members(request, template='refer/members.html'):
@@ -89,11 +92,32 @@ def join_done(request, form=UserNumberForm):
 		reverse('join_pre'))
 
 @receiver(post_save, sender=Member)
-def check_eligibility(sender, instance, **kwargs):
-    """
-    We need to traverse the tree everytime a new member is added, and apportion
-    some form of points or note their states.
-    Modified Pre-order Tree Traversal might be the secret to this.
-    """
-    if kwargs['created']:
-	pass
+def pay_bonus(sender, instance, **kwargs):
+    member = instance.referrer
+    if member:
+	if member.is_standard():
+	    RefillHistory.objects.create(subscriber=member.subscriber,
+		    last_recharge_amount=settings.BONUS_PER_REFERRAL * 2, source="GLPRB")
+
+	elif member.is_bronze():
+	    RefillHistory.objects.create(subscriber=member.subscriber,
+		    last_recharge_amount=settings.BONUS_PER_REFERRAL * 4, source="GLPRB")
+
+	elif member.is_silver():
+	    RefillHistory.objects.create(subscriber=member.subscriber,
+		    last_recharge_amount=settings.BONUS_PER_REFERRAL * 8, source="GLPRB")
+
+	elif member.is_gold():
+	    RefillHistory.objects.create(subscriber=member.subscriber,
+		    last_recharge_amount=settings.BONUS_PER_REFERRAL * 16, source="GLPRB")
+
+	elif member.is_platinum():
+	    RefillHistory.objects.create(subscriber=member.subscriber,
+		    last_recharge_amount=settings.BONUS_PER_REFERRAL * 32, source="GLPRB")
+
+	elif member.is_diamond():
+	    RefillHistory.objects.create(subscriber=member.subscriber,
+		    last_recharge_amount=settings.BONUS_PER_REFERRAL * 64, source="GLPRB")
+
+	else:
+	    pass

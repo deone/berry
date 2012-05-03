@@ -1,11 +1,14 @@
 - Disable referral input field on confirm page.
 
-Customer Recharge Account Emulator. For demo purposes, recharge = spend.
-- Refill: App that recharges a user's account.
-  * Create entry of last recharge date and recharge amount in DB.
-
 What's next?
 Write and test:
 - For parent during save().
-- Signal on save() to inform referrer when a level is initiated.
-- Styles and finesse.
+- Signal on save() to inform referrer when a level is initiated and completed.
+  For now, this works on save(), implying that a member would not be moved to
+  the next level, even if he has attained it (by virtue of his downlines'
+  referrals) until his next referral when we would call another save(). We can
+  fix this buying running the paybonus script weekly to reward those who have
+  completed a level and have not been rewarded.
+- Pay a commission on the lower of weekly spend for left and right descendants.
+- Members should see a dashboard on logging in.
+- Test, Test and Test!!

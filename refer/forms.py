@@ -57,6 +57,8 @@ class UserNumberForm(ReferrerNumberForm):
 	if created:
 	    referrer_password = set_password(referrer)
 	    set_rank(referrer)
+	else:
+	    referrer_password = None
 	    
 	notify(referrer, 'referrer', referrer_password, created)
 	notify(referral, 'referral', referral_password)
