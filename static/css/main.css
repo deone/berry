@@ -1,0 +1,20 @@
+body	{
+    position: relative;
+    padding-top: 90px;
+    background-color: #fff;
+    background-image: url(../img/grid-18px-masked.png);
+    background-repeat: repeat-x;
+    background-position: 0 40px;
+}
+
+.join	{
+    padding-top: 150px;
+}
+
+.join form input[type='text']	{
+    padding: 10px 14px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: normal;
+    letter-spacing: 1px;
+}
