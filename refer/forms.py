@@ -32,7 +32,7 @@ class UserNumberForm(ReferrerNumberForm):
     def __init__(self, *args, **kwargs):
 	super(UserNumberForm, self).__init__(*args, **kwargs)
 	self.fields['phone_number'].widget = forms.TextInput(attrs={'class': 'integer input-large',
-		'placeholder': "Your Number"})
+	    'placeholder': "Your Number", 'maxlength': 11})
 
     def clean_phone_number(self):
 	intl_phone_no = "+234" + self.cleaned_data['phone_number'][1:]
@@ -89,6 +89,7 @@ def set_rank(member):
 
 def set_password(member):
     raw_password = "".join(random.sample('%s%s' % (string.lowercase, string.digits), 6))
+    member.subscriber.user.set_password(raw_password)
     member.subscriber.user.save()
 
     return raw_password
