@@ -79,6 +79,11 @@ def get_parent(referrer):
 	leaf_node_ids = [m.id for m in descendants if m.is_leaf_node()]
 	return descendants.get(pk=min(leaf_node_ids))
 
+    # TODO 1
+    # descendants = referrer.get_descendants(True)
+    # node_ids = [m.id for m in descendants if m.get_children().count() < 2]
+    # return descendants.get(pk=min(node_ids))
+
 def set_rank(member):
     Rank.objects.create(member=member, rank=0)
 

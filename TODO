@@ -1,4 +1,7 @@
-- Disable referral input field on confirm page. On second thoughts, instead of disabling input, we can just display the number entered since we don't need the input for anything.
+1. It is currently impossible for a member to get to a rank through his referrals
+alone except for standard rank. This is because the system automatically makes
+new referrals children of leaf nodes. We may need to change this to also allow
+child-ing of descendants with one child.
 
 What's next?
 - Test model ranking feature.
