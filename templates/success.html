@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block app_body %}
+<div class="span11 alert alert-success">
+    <h4 class="alert-heading">Success!</h4>
+    <span class="capitalize">{{ user.get_full_name }}</span>, thank you for joining the Freebird Reward System. Your login credentials have been
+    sent to your email address and phone. You may <a href="{% url login %}">login</a>.
+</div>
+{% endblock %}
