@@ -8,10 +8,24 @@ body	{
 }
 
 .join	{
-    padding-top: 150px;
+    margin-top: 150px;
 }
 
-.join form input[type='text']	{
+.details    {
+    margin-left: 60px;
+    margin-right: 40px;
+}
+
+.phone_no   {
+    color: green;
+    letter-spacing: 1px;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.join input[type='text']    {
     padding: 10px 14px;
     font-size: 18px;
     font-weight: bold;

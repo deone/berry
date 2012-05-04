@@ -3,24 +3,16 @@
 {% load thumbnail %}
 
 {% block _form %}
-{% if messages %}
-    {% for message in messages %}
-    <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
-    {% endfor %}
-{% endif %}
-
-<form action="{% url join_final %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    {% if not subscriber %}
-    <button>Submit</button>
-    {% endif %}
+{{ form.non_field_errors }}
+{{ form.phone_number.errors }}
+{% if not subscriber %}
+<form class="well form-inline join" action="{% url join_final %}" method="post">{% csrf_token %}
+    {{ form.phone_number }}
+    <button type="submit" class="btn btn-primary btn-large">Next</button>
 </form>
+{% endif %}
 {% endblock %}
-
-{% block subscriber_confirm %}
-<p>
-    You have chosen {{ subscriber.user.get_full_name }} as you.
-    If this is correct, please continue.
-</p>
-<a href="{% url join_done %}">Submit</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
+{% block you_or_referrer %}<h2>Your Details</h2>{% endblock %}
+{% block final_or_done %}
+    <a href="{% url join_done %}" class="btn btn-primary">Sign Up!</a>
 {% endblock %}

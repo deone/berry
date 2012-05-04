@@ -3,36 +3,40 @@
 {% load thumbnail %}
 
 {% block app_body %}
-
-{% block _form %}
-<form id="join_form" action="{% url join_pre %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    {% if not subscriber %}
-    <button>Next</button>
-    {% endif %}
-</form>
-{% endblock %}
-
-{% if subscriber %}
-    {% thumbnail subscriber.photo "97x97" crop="center" as sp %}
-    <img src="{{ sp.url }}" width="{{ sp.width }}" height="{{ sp.height }}"/>
-    {% endthumbnail %}
-    {% block subscriber_confirm %}
-    <p>
-	You have chosen {{ subscriber.user.get_full_name }} as your referrer.
-	If this is correct, please continue.
-    </p>
-    <a href="{% url join_final %}">Confirm</a>&nbsp;<a href="{% url join_pre %}">Cancel</a>
-    {% endblock %}
-{% endif %}
-{% endblock %}
-
-{% block custom_js %}
-    <script src="{{ STATIC_URL }}js/jquery.numeric.js"></script>
-    <script>
-	$(".numeric").numeric();
-	$(".integer").numeric(false, function()	{
-	    alert("Integers only"); this.value = ""; this.focus();
-	});
-    </script>
+    <div class="row">
+	<div class="span4">&nbsp;</div>
+	<div class="span4">
+	    {% block _form %}
+		{{ form.non_field_errors }}
+		{{ form.phone_number.errors }}
+		{% if not subscriber %}
+		    <form class="well form-inline join" action="{% url join_pre %}" method="post">{% csrf_token %}
+			{{ form.phone_number }}
+			<button type="submit" class="btn btn-primary btn-large">Next</button>
+		    </form>
+		{% endif %}
+	    {% endblock %}
+	    {% if subscriber %}
+		<div class="details">
+		    {% block you_or_referrer %}<h2>Your Referrer&apos;s Details</h2>{% endblock %}
+		    <div class="thumbnail">
+			{% thumbnail subscriber.photo "260x180" crop="center" as sp %}
+			    <img src="{{ sp.url }}" width="{{ sp.width }}" height="{{ sp.height }}"/>
+			{% endthumbnail %}
+			<div class="caption">
+			    <h3>{{ subscriber.user.get_full_name }}</h3>
+			    <h3 class="phone_no">{{ subscriber.get_msisdn }}</h3>
+			    <p>If this information is correct, please continue.</p>
+			    <p>
+			    {% block final_or_done %}
+				<a href="{% url join_final %}" class="btn btn-primary">Continue</a>
+			    {% endblock %}
+				<a href="{% url join_pre %}" class="btn">Cancel</a>
+			    </p>
+			</div>
+		    </div>
+		</div>
+	    {% endif %}
+	</div>
+    </div>
 {% endblock %}
