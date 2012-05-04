@@ -75,18 +75,18 @@ def join_final(request, template='refer/final.html', form=UserNumberForm):
     context['form'] = form
     return render_to_response(template, context, context_instance=RequestContext(request))
 
-def join_done(request, template="success.html", form=UserNumberForm):
-    if request.session.get('referrer') and request.session.get('referral'):
+def join_done(request, template="feedback.html", form=UserNumberForm):
+    try:
 	referrer, referral = request.session['referrer'], request.session['referral']
+    except KeyError, e:
+	return render_to_response(template, {}, context_instance=RequestContext(request))
+    else:
 	form = form()
 	referrer, referral = form.save(referrer, referral)
 
 	request.session.flush()
 
 	return render_to_response(template, {'user': referral.subscriber.user}, context_instance=RequestContext(request))
-    else:
-	return HttpResponse("Please commence your registration <a href='%s'>here</a>." %
-		reverse('join_pre'))
 
 @receiver(post_save, sender=Member)
 def pay_bonus(sender, instance, **kwargs):
