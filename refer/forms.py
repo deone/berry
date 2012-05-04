@@ -1,6 +1,10 @@
 from django import forms
+from django.forms.util import ErrorList
 from django.shortcuts import render_to_response, get_object_or_404
 from django.conf import settings
+from django.utils.safestring import mark_safe
+from django.utils.html import conditional_escape
+from django.utils.encoding import force_unicode
 
 from accounts.models import SubscriberInfo
 from refer.models import Member, Rank
@@ -12,31 +16,33 @@ import string
 
 class ReferrerNumberForm(forms.Form):
     phone_number = forms.CharField(label="Referrer's Number",
-	    widget=forms.TextInput(attrs={'class': 'integer'}), max_length=11)
+	    widget=forms.TextInput(attrs={'class': 'integer input-large',
+		'placeholder': "Referrer's Number"}), max_length=11)
 
-    def clean(self):
+    def clean_phone_number(self):
 	msisdn_prefix = self.cleaned_data['phone_number'][:4]
 	if msisdn_prefix not in settings.MSISDN_PREFIXES:
 	    raise forms.ValidationError("This phone number is not valid.")
 	self.cleaned_data['phone_number'] = "+234" + self.cleaned_data['phone_number'][1:]
 
-	return self.cleaned_data
+	return self.cleaned_data['phone_number']
 
 
 class UserNumberForm(ReferrerNumberForm):
     def __init__(self, *args, **kwargs):
 	super(UserNumberForm, self).__init__(*args, **kwargs)
-	self.fields['phone_number'].label = "Your Number"
+	self.fields['phone_number'].widget = forms.TextInput(attrs={'class': 'integer input-large',
+		'placeholder': "Your Number"})
 
-    def clean(self):
+    def clean_phone_number(self):
 	intl_phone_no = "+234" + self.cleaned_data['phone_number'][1:]
 
 	registered_sub_nos = [str(m.subscriber.msisdn) for m in Member.objects.all()]
 	if intl_phone_no in registered_sub_nos:
 	    raise forms.ValidationError("""This subscriber is already registered as a member.""")
 
-	super(UserNumberForm, self).clean()
-	return self.cleaned_data
+	super(UserNumberForm, self).clean_phone_number()
+	return self.cleaned_data['phone_number']
 
     def save(self, referrer_no, referral_no):
 	referrer_subscriber = get_object_or_404(SubscriberInfo,
@@ -104,3 +110,16 @@ def notify(member, mtype, password, created=False):
 	pass
 
     member.subscriber.user.email_user(subject, message, settings.SENDER_EMAIL)
+
+
+class DivErrorList(ErrorList):
+    def __unicode__(self):
+	return self.as_divs()
+    def as_divs(self):
+	if not self:
+	    return u''
+	return mark_safe(u'<div class="errorlist">%s</div>'
+                % ''.join([u"""
+		<div class="alert alert-error fade in">
+		    <button class="close" data-dismiss="alert">&times;</button>%s
+		</div>""" % conditional_escape(force_unicode(e)) for e in self]))

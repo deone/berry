@@ -13,7 +13,7 @@ class ReferrerNumberFormTestCase(TestCase):
 		}
 	    form = ReferrerNumberForm(data)
 	    self.assertFalse(form.is_valid())
-	    self.assertEqual(form.errors['__all__'],
+	    self.assertEqual(form.errors['phone_number'],
 		    [u'This phone number is not valid.'])
 
 
@@ -21,17 +21,13 @@ class UserNumberFormTestCase(ReferrerNumberFormTestCase):
     
     fixtures = ['usertestdata.json', 'subscriberinfotestdata.json', 'membertestdata.json']
 
-    def test_field_label(self):
-	form = UserNumberForm()
-	self.assertEqual(form.fields['phone_number'].label, "Your Number")
-
     def test_existing_member(self):
 	data = {
-		'phone_number': '08051111111'
+		'phone_number': '08050111111'
 		}
 	form = UserNumberForm(data)
 	self.assertFalse(form.is_valid())
-	self.assertEqual(form.errors['__all__'], [u"""This subscriber is already registered as a member."""])
+	self.assertEqual(form.errors['phone_number'], [u"""This subscriber is already registered as a member."""])
 
     def test_success(self):
 	rf, rfrl = "+2348050666666", "+2348050444444"

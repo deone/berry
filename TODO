@@ -1,8 +1,8 @@
-- Disable referral input field on confirm page.
+- Disable referral input field on confirm page. On second thoughts, instead of disabling input, we can just display the number entered since we don't need the input for anything.
 
 What's next?
-Write and test:
-- For parent during save().
+- Test model ranking feature.
+- Test for parent during save().
 - Signal on save() to inform referrer when a level is initiated and completed.
   For now, this works on save(), implying that a member would not be moved to
   the next level, even if he has attained it (by virtue of his downlines'

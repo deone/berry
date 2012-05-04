@@ -1,13 +1,12 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 
-from refer.forms import ReferrerNumberForm, UserNumberForm
+from refer.forms import *
 from refer.models import Member
 from accounts.models import *
 
@@ -46,7 +45,7 @@ def index(request, template='refer/index.html', form=ReferrerNumberForm):
 	else:
 	    return HttpResponse("Please enable cookies and try again.")
 
-	form = form(request.POST)
+	form = form(request.POST, error_class=DivErrorList)
 	if form.is_valid():
 	    request.session['referrer'] = form.cleaned_data['phone_number']
 	    subscriber = get_object_or_404(SubscriberInfo,
@@ -64,7 +63,7 @@ def index(request, template='refer/index.html', form=ReferrerNumberForm):
 def join_final(request, template='refer/final.html', form=UserNumberForm):
     context = {}
     if request.method == "POST":
-	form = form(request.POST)
+	form = form(request.POST, error_class=DivErrorList)
 	if form.is_valid():
 	    request.session['referral'] = form.cleaned_data['phone_number']
 	    subscriber = get_object_or_404(SubscriberInfo,
