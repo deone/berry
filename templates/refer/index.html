@@ -5,18 +5,19 @@
 {% block app_body %}
     <div class="row">
 	<div class="span4">&nbsp;</div>
-	<div class="span4">
-	    {% block _form %}
-		{{ form.non_field_errors }}
-		{{ form.phone_number.errors }}
-		{% if not subscriber %}
-		    <form class="well form-inline join" action="{% url join_pre %}" method="post">{% csrf_token %}
+	{% if not subscriber %}
+	    <div class="span4 join">
+		{% block _form %}
+		    {{ form.non_field_errors }}
+		    {{ form.phone_number.errors }}
+		    <form class="well form-inline" action="{% url join_pre %}" method="post">{% csrf_token %}
 			{{ form.phone_number }}
 			<button type="submit" class="btn btn-primary btn-large">Next</button>
 		    </form>
-		{% endif %}
-	    {% endblock %}
-	    {% if subscriber %}
+		{% endblock %}
+	    </div>
+	{% else %}
+	    <div class="span4">
 		<div class="details">
 		    {% block you_or_referrer %}<h2>Your Referrer&apos;s Details</h2>{% endblock %}
 		    <div class="thumbnail">
@@ -36,7 +37,7 @@
 			</div>
 		    </div>
 		</div>
-	    {% endif %}
-	</div>
+	    </div>
+	{% endif %}
     </div>
 {% endblock %}

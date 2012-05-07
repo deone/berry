@@ -8,7 +8,16 @@ body	{
 }
 
 .join	{
-    margin-top: 150px;
+    padding-top: 150px;
+}
+
+.login	{
+    margin-top: 40px;
+}
+
+.login .alert	{
+    margin-left: 34%;
+    margin-right: 19%;
 }
 
 .details    {
@@ -25,7 +34,7 @@ body	{
     text-transform: capitalize;
 }
 
-.join input[type='text']    {
+.join form input[type='text']    {
     padding: 10px 14px;
     font-size: 18px;
     font-weight: bold;
