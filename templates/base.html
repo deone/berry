@@ -41,6 +41,10 @@
             <span class="icon-bar"></span>
           </a>
           <a class="brand" href="#">Freebird Reward System</a>
+	    {% if user.is_authenticated %}
+		{% block signed_in %}
+		{% endblock %}
+	    {% endif %}
         </div>
       </div>
     </div>
@@ -51,6 +55,7 @@
 
     <script src="{{ STATIC_URL }}js/jquery.js"></script>
     <script src="{{ STATIC_URL }}js/bootstrap-alert.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap-dropdown.js"></script>
     <script src="{{ STATIC_URL }}js/jquery.numeric.js"></script>
     <script>
 	$(".numeric").numeric();

@@ -4,10 +4,10 @@ from accounts.forms import AuthForm
 
 urlpatterns = patterns('accounts.views',
     url(r'^home$', 'index', name='join'),
-    url(r'^logout$', 'logout', name='logout'),
+    url(r'^signout$', 'logout', name='signout'),
 )
 
 urlpatterns += patterns('',
-    url(r'^login$', 'django.contrib.auth.views.login', {'template_name':
-	'accounts/login.html', 'authentication_form': AuthForm}, 'login'),
+    url(r'^signin$', 'django.contrib.auth.views.login', {'template_name':
+	'accounts/login.html', 'authentication_form': AuthForm}, 'signin'),
 )
