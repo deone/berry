@@ -21,14 +21,98 @@
 	<h1>Welcome <span class="capitalize">{{ user.get_full_name }}</span></h1>
     </div>
     <div class="row">
-	<div class="span4" style="background-color: #ff0">
+	<div class="span4">
 	    <h2>Descendants</h2>
+	    <div class="descendants row">
+		<div class="span2">
+		    <div class="pane">
+			<p>
+			    {{ user.subscriberinfo.member.get_left_descendant_count }}<span>L</span>
+			</p>
+		    </div>
+		</div>
+		<div class="span2">
+		    <div class="pane">
+			<p>
+			    {{ user.subscriberinfo.member.get_right_descendant_count }}<span>R</span>
+			</p>
+		    </div>
+		</div>
+	    </div>
 	</div>
 	<div class="span4">
-	    <h2>Earnings This Week</h2>
+	    <h2>Earnings</h2>
+	    <h3 class="subhead">Referral Bonus</h3>
+	    <div class="earnings row">
+		<div class="span2">
+		    <div class="pane">
+			<h4>This Week</h4>
+			<p>&#8358;100000.00</p>
+		    </div>
+		</div>
+		<div class="span2">
+		    <div class="pane">
+			<h4>Total</h4>
+			<p>&#8358;100000.00</p>
+		    </div>
+		</div>
+	    </div>
+	    <h3 class="subhead commission">Spend Commission</h3>
+	    <div class="earnings row">
+		<div class="span2">
+		    <div class="pane">
+			<h4>This Week</h4>
+			<p>&#8358;100000.00</p>
+		    </div>
+		</div>
+		<div class="span2">
+		    <div class="pane">
+			<h4>Total</h4>
+			<p>&#8358;100000.00</p>
+		    </div>
+		</div>
+	    </div>
 	</div>
 	<div class="span4">
 	    <h2>Progress</h2>
+	    <div class="rank-progress pane">
+	    {% ifequal user.subscriberinfo.member.rank.rank 0 %}
+		<h4>You have not attained any rank.</h4>
+	    {% else %}
+		<p>Rank 
+		{% ifequal user.subscriberinfo.member.rank.rank 1 %}
+		    <span class="standard">
+			{{ user.subscriberinfo.member.rank.get_rank_display }}
+		    </span>
+		{% endifequal %}
+		{% ifequal user.subscriberinfo.member.rank.rank 2 %}
+		    <span class="bronze">
+			{{ user.subscriberinfo.member.rank.get_rank_display }}
+		    </span>
+		{% endifequal %}
+		{% ifequal user.subscriberinfo.member.rank.rank 3 %}
+		    <span class="silver">
+			{{ user.subscriberinfo.member.rank.get_rank_display }}
+		    </span>
+		{% endifequal %}
+		{% ifequal user.subscriberinfo.member.rank.rank 4 %}
+		    <span class="gold">
+			{{ user.subscriberinfo.member.rank.get_rank_display }}
+		    </span>
+		{% endifequal %}
+		{% ifequal user.subscriberinfo.member.rank.rank 5 %}
+		    <span class="platinum">
+			{{ user.subscriberinfo.member.rank.get_rank_display }}
+		    </span>
+		{% endifequal %}
+		{% ifequal user.subscriberinfo.member.rank.rank 6 %}
+		    <span class="diamond">
+			{{ user.subscriberinfo.member.rank.get_rank_display }}
+		    </span>
+		{% endifequal %}
+		</p>
+	    {% endifequal %}
+	    </div>
 	</div>
     </div>
 </section>
