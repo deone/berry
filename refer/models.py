@@ -24,6 +24,24 @@ class Member(MPTTModel):
     def __unicode__(self):
 	return str(self.subscriber.msisdn)
 
+    def get_left_descendant_count(self):
+	children = self.get_children()
+	if not children:
+	    left = 0
+	else:
+	    left = int(children[0].get_descendant_count()) + 1
+	
+	return left
+
+    def get_right_descendant_count(self):
+	children = self.get_children()
+	if not children or len(children) == 1:
+	    right = 0
+	else:
+	    right = int(children[1].get_descendant_count()) + 1
+
+	return right
+
     def is_qualified(self):
 	if self.referrals.count() >= 2:
 	    return True

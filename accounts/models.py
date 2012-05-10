@@ -8,7 +8,7 @@ REFILL_SOURCE_CHOICES = (
 	("", "Select Source"),
 	("UT", "User TopUp"),
 	("GLPRB", "GLP Referral Bonus"),
-	("GLPC", "GLP Commission"),
+	("GLPSC", "GLP Spend Commission"),
 )
 
 
