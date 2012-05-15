@@ -72,17 +72,9 @@ class UserNumberForm(ReferrerNumberForm):
 	return referrer, referral
 
 def get_parent(referrer):
-    if referrer.get_children().count() < 2:
-	return referrer
-    else:
-	descendants = referrer.get_descendants()
-	leaf_node_ids = [m.id for m in descendants if m.is_leaf_node()]
-	return descendants.get(pk=min(leaf_node_ids))
-
-    # TODO 1
-    # descendants = referrer.get_descendants(True)
-    # node_ids = [m.id for m in descendants if m.get_children().count() < 2]
-    # return descendants.get(pk=min(node_ids))
+    descendants = referrer.get_descendants(True)
+    node_ids = [m.id for m in descendants if m.get_children().count() < 2]
+    return descendants.get(pk=min(node_ids))
 
 def set_rank(member):
     Rank.objects.create(member=member, rank=0)
