@@ -9,4 +9,4 @@ def index(request, template="accounts/index.html"):
 
 def logout(request):
     auth.logout(request)
-    return redirect(reverse('join_pre'))
+    return redirect(reverse('signin'))
